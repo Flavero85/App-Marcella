@@ -17,15 +17,20 @@
             height: 60px;
             cursor: pointer;
             transition: background-color 0.2s;
+            padding: 4px;
+            font-size: 0.8rem;
+            vertical-align: top;
         }
         #schedule-body td[data-id]:hover {
-            background-color: #eff6ff;
+            background-color: #eff6ff; /* Azul bem claro */
         }
         #schedule-body td.filled {
-            background-color: #dbeafe;
+            background-color: #dbeafe; /* Azul claro */
             color: #1e40af;
             font-weight: 500;
             cursor: pointer;
+            white-space: normal;
+            word-break: break-word;
         }
     </style>
 </head>
@@ -36,7 +41,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/></svg>
                 Voltar
             </a>
-            <h1 class="text-3xl font-bold text-gray-800 text-center">Tabela de Horários</h1>
+            <h1 class="text-3xl font-bold text-gray-800 text-center">Agenda Semanal</h1>
             <button id="clear-schedule-btn" class="bg-red-100 text-red-700 font-semibold py-2 px-4 rounded-lg hover:bg-red-200 transition-all text-sm">
                 Limpar Agenda
             </button>
@@ -64,7 +69,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js').then(reg => console.log('ServiceWorker Registrado.'), err => console.error('Falha no Registro do ServiceWorker: ', err));
+                navigator.serviceWorker.register('service-worker.js').then(reg => console.log('ServiceWorker Registrado.'), err => console.error('Falha no Registro do ServiceWorker: ', err));
             });
         }
     </script>
