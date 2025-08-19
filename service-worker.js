@@ -1,5 +1,5 @@
-// Versão do cache aumentada para forçar a atualização
-const CACHE_NAME = 'app-to-marcella-v2';
+// Versão do cache aumentada para forçar a atualização de todos os arquivos
+const CACHE_NAME = 'app-to-marcella-vFinalPWA'; 
 
 // Lista de todos os arquivos que o aplicativo precisa para funcionar offline
 const URLS_TO_CACHE = [
@@ -10,6 +10,7 @@ const URLS_TO_CACHE = [
   './notes.html',
   './schedule.html',
   './script.js',
+  './manifest.json',
   './icon-192x192.png',
   './icon-512x512.png'
 ];
@@ -30,6 +31,7 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
+        // Se o arquivo for encontrado no cache, retorna ele. Senão, busca na rede.
         return response || fetch(event.request);
       })
   );
