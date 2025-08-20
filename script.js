@@ -8,9 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const isSchedulePage = document.getElementById('schedule-body');
 
     // === FUNÇÕES GLOBAIS DE BANCO DE DADOS (localStorage) ===
-    function getFromDB(key) { return JSON.parse(localStorage.getItem(key)) || []; }
-    function saveToDB(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
-    function getPatientById(id) { const patients = getFromDB('patientsDB_marcella'); return patients.find(p => p.id === id); }
+    function getFromDB(key) {
+        const data = localStorage.getItem(key);
+        // Lida com dados que podem não ser arrays (como a agenda)
+        if (key.includes('schedule')) {
+            return data ? JSON.parse(data) : {};
+        }
+        return data ? JSON.parse(data) : [];
+    }
+
+    function saveToDB(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    function getPatientById(id) {
+        const patients = getFromDB('patientsDB_marcella');
+        return Array.isArray(patients) ? patients.find(p => p.id === id) : undefined;
+    }
     
     // === LÓGICA DA PÁGINA DE CADASTRO (add-patient.html) ===
     if (isAddPatientPage) {
@@ -28,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 mainComplaint: document.getElementById('main-complaint').value.trim(),
                 sessions: []
             };
-            const patients = getFromDB('patientsDB_marcella');
+            let patients = getFromDB('patientsDB_marcella');
+            if (!Array.isArray(patients)) patients = [];
             patients.push(newPatient);
             saveToDB('patientsDB_marcella', patients);
             alert('Cliente salvo com sucesso!');
@@ -55,12 +70,132 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // === LÓGICA DA PÁGINA DE DETALHES (patient-details.html) ===
     if (isPatientDetailsPage) {
-        // ... (código existente da página de detalhes) ...
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = parseInt(urlParams.get('id'));
+        let patient = getPatientById(patientId);
+        
+        const patientNameEl = document.getElementById('patient-name');
+        const patientDetailsContainer = document.getElementById('patient-details-container');
+        const patientComplaintContainer = document.getElementById('patient-complaint-container');
+        const sessionForm = document.getElementById('session-form');
+        const sessionList = document.getElementById('session-list');
+        const deletePatientBtn = document.getElementById('delete-patient-btn');
+
+        function renderSessions() {
+            sessionList.innerHTML = '';
+            if (!patient.sessions || patient.sessions.length === 0) {
+                sessionList.innerHTML = '<p class="text-gray-500 text-center">Nenhuma sessão registrada.</p>';
+                return;
+            }
+            patient.sessions.slice().reverse().forEach(session => {
+                const sessionCard = document.createElement('div');
+                sessionCard.className = 'session-card relative p-4 rounded-lg border border-gray-200 animate-fade-in';
+                const dataFormatada = new Date(session.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+                sessionCard.innerHTML = `
+                    <p class="text-sm font-semibold text-gray-500">${dataFormatada}</p>
+                    <p class="mt-2 text-gray-700 whitespace-pre-wrap">${session.note}</p>
+                    <button data-session-id="${session.date}" class="delete-session-btn absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+                    </button>
+                `;
+                sessionList.appendChild(sessionCard);
+            });
+        }
+
+        if (patient) {
+            patientNameEl.textContent = patient.name;
+            document.title = patient.name;
+            patientDetailsContainer.innerHTML = `
+                <div class="flex items-center gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-telephone-fill text-gray-400 flex-shrink-0" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.28 1.465l-2.135 2.135a11.945 11.945 0 0 0 6.014 6.014l2.135-2.135a1.745 1.745 0 0 1 1.465.28l2.305 1.729c.423.329.974.445 1.465.28l.005-.004a1.745 1.745 0 0 1 .163 2.61l-1.01 1.01a1.745 1.745 0 0 1-2.573 0l-2.38-2.379a1.873 1.873 0 0 1-1.14-1.445l-.004-.005c-.244-.79-.588-1.547-.99-2.24l-.005-.009a12.01 12.01 0 0 0-2.24-.99l-.009-.005a1.873 1.873 0 0 1-1.445-1.14l-2.379-2.38a1.745 1.745 0 0 1 0-2.573l1.01-1.01z"/></svg><span>${patient.phone || 'Não informado'}</span></div>
+                <div class="flex items-start gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-badge text-gray-400 flex-shrink-0" viewBox="0 0 16 16"><path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M4.5 0A2.5 2.5 0 0 0 2 2.5v11A2.5 2.5 0 0 0 4.5 16h7a2.5 2.5 0 0 0 2.5-2.5v-11A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v11a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 13.5v-11z"/></svg><span>${patient.age ? patient.age + ' anos' : 'Não informado'}</span></div>
+                <div class="flex items-start gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-geo-alt-fill text-gray-400 flex-shrink-0" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg><span class="flex-1">${patient.address || 'Não informado'}</span></div>
+                <div class="flex items-start gap-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart-pulse text-gray-400 flex-shrink-0" viewBox="0 0 16 16"><path d="M10.835 12.184a.5.5 0 0 0-.75.434V14.5a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1.882a.5.5 0 0 0-.75-.434L11 12.446l-.165-.262z"/><path d="M11.334 3.065a.5.5 0 0 0-.708 0L8.5 5.166l-.826-1.377a.5.5 0 0 0-.858 0L6.002 5.166 4.87 3.065a.5.5 0 0 0-.708.708l1.36 2.267.002.003a.5.5 0 0 0 .858 0L8 4.202l1.834 1.834a.5.5 0 0 0 .708 0l1.36-1.36a.5.5 0 0 0 0-.708l-1.36-1.36zM8 3.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 .5-.5z"/><path d="M7.5 6.5A.5.5 0 0 1 8 7v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5zm2 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0V7a.5.5 0 0 1 .5-.5z"/><path d="M8.034 0a1.5 1.5 0 0 1 1.06.44l4.5 4.5a1.5 1.5 0 0 1 0 2.12l-4.5 4.5a1.5 1.5 0 0 1-2.12 0l-4.5-4.5a1.5 1.5 0 0 1 0-2.12l4.5-4.5A1.5 1.5 0 0 1 8.034 0zM8 1a.5.5 0 0 0-.354.146l-4.5 4.5a.5.5 0 0 0 0 .708l4.5 4.5a.5.5 0 0 0 .708 0l4.5-4.5a.5.5 0 0 0 0-.708l-4.5-4.5A.5.5 0 0 0 8 1z"/></svg><span>${patient.serviceType}</span></div>`;
+            patientComplaintContainer.innerHTML = `<h3 class="font-semibold text-gray-700">Queixa Principal / Objetivos</h3><p class="mt-2 text-gray-600 whitespace-pre-wrap">${patient.mainComplaint || 'Não informado'}</p>`;
+            
+            renderSessions();
+
+            sessionForm.addEventListener('submit', (e) => { e.preventDefault(); const note = document.getElementById('anotacao').value.trim(); if (!note) return; const newSession = { date: new Date().toISOString(), note: note }; if (!patient.sessions) patient.sessions = []; patient.sessions.push(newSession); let patients = getFromDB('patientsDB_marcella'); const patientIndex = patients.findIndex(p => p.id === patientId); patients[patientIndex] = patient; saveToDB('patientsDB_marcella', patients); renderSessions(); sessionForm.reset(); });
+            
+            sessionList.addEventListener('click', (e) => {
+                const deleteBtn = e.target.closest('.delete-session-btn');
+                if (deleteBtn) {
+                    const sessionId = deleteBtn.dataset.sessionId;
+                    if (confirm('Tem certeza que deseja excluir esta anotação de sessão?')) {
+                        patient.sessions = patient.sessions.filter(s => s.date !== sessionId);
+                        let patients = getFromDB('patientsDB_marcella');
+                        const patientIndex = patients.findIndex(p => p.id === patientId);
+                        patients[patientIndex] = patient;
+                        saveToDB('patientsDB_marcella', patients);
+                        renderSessions();
+                    }
+                }
+            });
+
+            deletePatientBtn.addEventListener('click', () => {
+                if (confirm(`TEM CERTEZA que deseja excluir permanentemente o cliente "${patient.name}"?\n\nTodos os dados e históricos de sessão serão perdidos.`)) {
+                    let patients = getFromDB('patientsDB_marcella');
+                    patients = patients.filter(p => p.id !== patientId);
+                    saveToDB('patientsDB_marcella', patients);
+                    alert(`Cliente "${patient.name}" excluído com sucesso.`);
+                    window.location.href = 'index.html';
+                }
+            });
+        } else {
+            patientNameEl.textContent = 'Cliente não encontrado';
+        }
     }
     
     // === LÓGICA DA PÁGINA DE ANOTAÇÕES (notes.html) ===
     if (isNotesPage) {
-        // ... (código existente da página de anotações) ...
+        const noteForm = document.getElementById('note-form');
+        const notesList = document.getElementById('notes-list');
+        const noteTitleInput = document.getElementById('note-title');
+        const noteContentInput = document.getElementById('note-content');
+
+        function renderNotes() {
+            const notes = getFromDB('notesDB_marcella');
+            notesList.innerHTML = '';
+            if (notes.length === 0) {
+                notesList.innerHTML = '<div class="bg-white p-6 rounded-xl shadow-md text-center text-gray-500">Nenhuma anotação salva.</div>';
+                return;
+            }
+            notes.slice().reverse().forEach(note => {
+                const noteCard = document.createElement('div');
+                noteCard.className = 'note-card relative bg-white p-6 rounded-xl shadow-md';
+                noteCard.innerHTML = `
+                    <h3 class="font-bold text-lg text-gray-800">${note.title || 'Anotação'}</h3>
+                    <p class="text-gray-500 text-sm mb-4">${new Date(note.id).toLocaleDateString('pt-BR')}</p>
+                    <p class="text-gray-700 whitespace-pre-wrap">${note.content}</p>
+                    <button data-id="${note.id}" class="delete-btn absolute top-4 right-4 text-gray-400 hover:text-red-500 opacity-0 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
+                    </button>
+                `;
+                notesList.appendChild(noteCard);
+            });
+        }
+        
+        noteForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newNote = { id: Date.now(), title: noteTitleInput.value.trim(), content: noteContentInput.value.trim() };
+            const notes = getFromDB('notesDB_marcella');
+            notes.push(newNote);
+            saveToDB('notesDB_marcella', notes);
+            noteForm.reset();
+            renderNotes();
+        });
+
+        notesList.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-btn')) {
+                const noteId = parseInt(e.target.closest('.delete-btn').dataset.id);
+                if (confirm('Tem certeza que deseja excluir esta anotação?')) {
+                    let notes = getFromDB('notesDB_marcella');
+                    notes = notes.filter(note => note.id !== noteId);
+                    saveToDB('notesDB_marcella', notes);
+                    renderNotes();
+                }
+            }
+        });
+        renderNotes();
     }
     
     // === LÓGICA DA PÁGINA DE HORÁRIOS (schedule.html) ===
@@ -69,6 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const calendarBody = document.getElementById('calendar-body');
         const prevMonthBtn = document.getElementById('prev-month-btn');
         const nextMonthBtn = document.getElementById('next-month-btn');
+        const modal = document.getElementById('daily-schedule-modal');
+        const modalDateEl = document.getElementById('modal-date');
+        const modalBody = document.getElementById('modal-body');
+        const closeModalBtn = document.getElementById('close-modal-btn');
         const clearButton = document.getElementById('clear-schedule-btn');
 
         let currentDate = new Date();
@@ -78,114 +217,120 @@ document.addEventListener('DOMContentLoaded', () => {
             const year = date.getFullYear();
             const month = date.getMonth();
             const today = new Date();
-
             const monthName = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(date);
             monthYearEl.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} de ${year}`;
-
             const firstDayOfMonth = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
-            const scheduleData = JSON.parse(localStorage.getItem('scheduleDB_marcella')) || {};
-
+            const scheduleData = getFromDB('scheduleDB_marcella_monthly');
             let dayCounter = 1;
-            for (let i = 0; i < 6; i++) { // 6 semanas para cobrir todos os cenários
+            for (let i = 0; i < 6; i++) {
                 const row = document.createElement('tr');
                 for (let j = 0; j < 7; j++) {
                     const cell = document.createElement('td');
-                    if (i === 0 && j < firstDayOfMonth) {
-                        cell.classList.add('other-month');
-                    } else if (dayCounter > daysInMonth) {
+                    if (i === 0 && j < firstDayOfMonth || dayCounter > daysInMonth) {
                         cell.classList.add('other-month');
                     } else {
                         const fullDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayCounter).padStart(2, '0')}`;
                         cell.dataset.date = fullDateStr;
-
                         const dayNumberDiv = document.createElement('div');
                         dayNumberDiv.className = 'day-number';
                         dayNumberDiv.textContent = dayCounter;
-                        
                         if (dayCounter === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
                             cell.classList.add('current-day');
                         }
-                        
                         cell.appendChild(dayNumberDiv);
-
-                        // Adiciona agendamentos salvos
-                        if (scheduleData[fullDateStr]) {
-                            scheduleData[fullDateStr].forEach(appt => {
-                                const apptEl = document.createElement('div');
-                                apptEl.className = 'appointment';
-                                apptEl.textContent = appt;
-                                cell.appendChild(apptEl);
-                            });
+                        if (scheduleData[fullDateStr] && scheduleData[fullDateStr].length > 0) {
+                            const dot = document.createElement('div');
+                            dot.className = 'appointment-dot';
+                            cell.appendChild(dot);
                         }
                         dayCounter++;
                     }
                     row.appendChild(cell);
                 }
                 calendarBody.appendChild(row);
-                if (dayCounter > daysInMonth) break; // Para de criar semanas se o mês acabou
+                if (dayCounter > daysInMonth) break;
             }
+        }
+
+        function openDayModal(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            modalDateEl.textContent = date.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
+            modalBody.innerHTML = '';
+            const scheduleData = getFromDB('scheduleDB_marcella_monthly');
+            const appointments = scheduleData[dateStr] || [];
+            
+            for (let hour = 7; hour <= 22; hour++) {
+                const hourStr = `${String(hour).padStart(2, '0')}:00`;
+                const appointment = appointments.find(a => a.startsWith(hourStr));
+                
+                const hourEl = document.createElement('div');
+                hourEl.className = 'flex items-center p-2 border-b cursor-pointer hover:bg-gray-100';
+                hourEl.dataset.hour = hourStr;
+                hourEl.dataset.date = dateStr;
+                
+                hourEl.innerHTML = `
+                    <span class="w-16 font-semibold text-gray-500">${hourStr}</span>
+                    <span class="flex-1 ml-4 ${appointment ? 'text-blue-800 font-semibold' : 'text-gray-400'}">${appointment ? appointment.split(' - ')[1] : 'Vago'}</span>
+                `;
+                modalBody.appendChild(hourEl);
+            }
+            modal.classList.add('flex');
+        }
+
+        function closeDayModal() {
+            modal.classList.remove('flex');
         }
 
         calendarBody.addEventListener('click', (e) => {
             const cell = e.target.closest('td');
             if (cell && cell.dataset.date) {
-                const date = cell.dataset.date;
-                const scheduleData = JSON.parse(localStorage.getItem('scheduleDB_marcella')) || {};
-                const appointments = scheduleData[date] || [];
-
-                let actionText = "Digite o horário e nome do cliente (ex: 09:00 - Ana Clara).\nPara limpar um horário, digite 'limpar' seguido do horário (ex: limpar 09:00).";
-                if (appointments.length > 0) {
-                    actionText = `Agendamentos para ${new Date(date + 'T00:00:00').toLocaleDateString('pt-BR')}:\n- ${appointments.join('\n- ')}\n\n${actionText}`;
-                }
-
-                const response = prompt(actionText);
-
-                if (response) {
-                    const lowerResponse = response.toLowerCase();
-                    if (lowerResponse.startsWith('limpar')) {
-                        const timeToClear = lowerResponse.replace('limpar', '').trim().slice(0, 5);
-                        scheduleData[date] = appointments.filter(appt => !appt.startsWith(timeToClear));
-                        if (scheduleData[date].length === 0) {
-                            delete scheduleData[date];
-                        }
-                    } else {
-                        if (!scheduleData[date]) {
-                            scheduleData[date] = [];
-                        }
-                        scheduleData[date].push(response);
-                        scheduleData[date].sort(); // Ordena os horários
-                    }
-                    saveToDB('scheduleDB_marcella', scheduleData);
-                    renderCalendar(currentDate);
-                }
+                openDayModal(cell.dataset.date);
             }
         });
 
-        prevMonthBtn.addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            renderCalendar(currentDate);
+        modalBody.addEventListener('click', (e) => {
+            const hourEl = e.target.closest('div[data-hour]');
+            if (hourEl) {
+                const hour = hourEl.dataset.hour;
+                const date = hourEl.dataset.date;
+                const scheduleData = getFromDB('scheduleDB_marcella_monthly');
+                let appointments = scheduleData[date] || [];
+                const existingAppointment = appointments.find(a => a.startsWith(hour));
+
+                if (existingAppointment) {
+                    if (confirm(`Deseja limpar o horário de "${existingAppointment}"?`)) {
+                        scheduleData[date] = appointments.filter(a => !a.startsWith(hour));
+                        if (scheduleData[date].length === 0) delete scheduleData[date];
+                    }
+                } else {
+                    const clientName = prompt(`Digite o nome do cliente para as ${hour}:`);
+                    if (clientName && clientName.trim() !== '') {
+                        if (!scheduleData[date]) scheduleData[date] = [];
+                        appointments.push(`${hour} - ${clientName.trim()}`);
+                        appointments.sort();
+                        scheduleData[date] = appointments;
+                    }
+                }
+                saveToDB('scheduleDB_marcella_monthly', scheduleData);
+                renderCalendar(currentDate);
+                openDayModal(date);
+            }
         });
 
-        nextMonthBtn.addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            renderCalendar(currentDate);
-        });
+        prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); });
+        nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); });
+        closeModalBtn.addEventListener('click', closeDayModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeDayModal(); });
         
         clearButton.addEventListener('click', () => {
             if (confirm("TEM CERTEZA?\nIsso irá apagar TODOS os agendamentos do mês visível.")) {
-                const scheduleData = JSON.parse(localStorage.getItem('scheduleDB_marcella')) || {};
+                const scheduleData = getFromDB('scheduleDB_marcella_monthly');
                 const year = currentDate.getFullYear();
                 const month = String(currentDate.getMonth() + 1).padStart(2, '0');
                 const monthPrefix = `${year}-${month}`;
-                
-                Object.keys(scheduleData).forEach(key => {
-                    if (key.startsWith(monthPrefix)) {
-                        delete scheduleData[key];
-                    }
-                });
-                saveToDB('scheduleDB_marcella', scheduleData);
+                Object.keys(scheduleData).forEach(key => { if (key.startsWith(monthPrefix)) delete scheduleData[key]; });
+                saveToDB('scheduleDB_marcella_monthly', scheduleData);
                 renderCalendar(currentDate);
             }
         });

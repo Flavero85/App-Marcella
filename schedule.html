@@ -12,64 +12,101 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        th, td { border: 1px solid #e2e8f0; }
-        #schedule-body td[data-id] {
-            height: 60px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            padding: 4px;
-            font-size: 0.8rem;
+        #calendar-body td {
+            height: 100px;
             vertical-align: top;
+            border: 1px solid #e2e8f0;
+            transition: background-color 0.2s;
         }
-        #schedule-body td[data-id]:hover {
-            background-color: #eff6ff; /* Azul bem claro */
-        }
-        #schedule-body td.filled {
-            background-color: #dbeafe; /* Azul claro */
-            color: #1e40af;
-            font-weight: 500;
+        #calendar-body td:not(.other-month):hover {
+            background-color: #eff6ff;
             cursor: pointer;
-            white-space: normal;
-            word-break: break-word;
         }
+        .day-number {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.5rem;
+        }
+        .other-month .day-number {
+            color: #cbd5e1;
+        }
+        .current-day .day-number {
+            background-color: #2563eb;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .appointment-dot {
+            width: 6px; height: 6px; background-color: #2563eb;
+            border-radius: 50%; margin: 4px auto 0;
+        }
+        #daily-schedule-modal { display: none; }
+        #daily-schedule-modal.flex { display: flex; }
     </style>
 </head>
 <body class="p-4 sm:p-6 md:p-8">
     <div class="max-w-7xl mx-auto">
-        <header class="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <header class="mb-6">
             <a href="index.html" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/></svg>
                 Voltar
             </a>
-            <h1 class="text-3xl font-bold text-gray-800 text-center">Agenda Semanal</h1>
-            <button id="clear-schedule-btn" class="bg-red-100 text-red-700 font-semibold py-2 px-4 rounded-lg hover:bg-red-200 transition-all text-sm">
-                Limpar Agenda
-            </button>
         </header>
 
-        <main class="bg-white p-4 sm:p-6 rounded-xl shadow-md overflow-x-auto">
-            <table class="w-full text-center text-sm table-fixed">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="p-3 w-28 font-semibold text-gray-600">Horário</th>
-                        <th class="p-3 font-semibold text-gray-600">Segunda</th>
-                        <th class="p-3 font-semibold text-gray-600">Terça</th>
-                        <th class="p-3 font-semibold text-gray-600">Quarta</th>
-                        <th class="p-3 font-semibold text-gray-600">Quinta</th>
-                        <th class="p-3 font-semibold text-gray-600">Sexta</th>
-                    </tr>
-                </thead>
-                <tbody id="schedule-body" class="text-gray-700">
-                    <!-- As linhas da agenda serão geradas dinamicamente aqui -->
-                </tbody>
-            </table>
+        <main class="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+            <div id="calendar-header" class="flex justify-between items-center mb-4">
+                <button id="prev-month-btn" class="p-2 rounded-full hover:bg-gray-100">&lt;</button>
+                <h2 id="month-year" class="text-xl font-bold text-gray-800"></h2>
+                <button id="next-month-btn" class="p-2 rounded-full hover:bg-gray-100">&gt;</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-center text-sm table-fixed">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="p-3 w-1/7 font-semibold text-gray-600">Dom</th>
+                            <th class="p-3 w-1/7 font-semibold text-gray-600">Seg</th>
+                            <th class="p-3 w-1/7 font-semibold text-gray-600">Ter</th>
+                            <th class="p-3 w-1/7 font-semibold text-gray-600">Qua</th>
+                            <th class="p-3 w-1/7 font-semibold text-gray-600">Qui</th>
+                            <th class="p-3 w-1/7 font-semibold text-gray-600">Sex</th>
+                            <th class="p-3 w-1/7 font-semibold text-gray-600">Sáb</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body" class="text-gray-700">
+                        <!-- O calendário será gerado dinamicamente aqui -->
+                    </tbody>
+                </table>
+            </div>
+             <div class="mt-4 text-right">
+                <button id="clear-schedule-btn" class="bg-red-100 text-red-700 font-semibold py-2 px-4 rounded-lg hover:bg-red-200 transition-all text-sm">
+                    Limpar Agenda do Mês
+                </button>
+            </div>
         </main>
     </div>
+
+    <!-- Modal da Agenda Diária -->
+    <div id="daily-schedule-modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
+            <header class="p-4 border-b flex justify-between items-center">
+                <h3 id="modal-date" class="font-bold text-lg"></h3>
+                <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            </header>
+            <div id="modal-body" class="p-4 overflow-y-auto">
+                <!-- Horários do dia serão inseridos aqui -->
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js').then(reg => console.log('ServiceWorker Registrado.'), err => console.error('Falha no Registro do ServiceWorker: ', err));
+                navigator.serviceWorker.register('./service-worker.js').then(reg => console.log('ServiceWorker Registrado.'), err => console.error('Falha no Registro do ServiceWorker: ', err));
             });
         }
     </script>
