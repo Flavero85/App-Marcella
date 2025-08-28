@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Cliente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .radio-option input { display: none; }
+        .radio-option label { transition: all 0.2s ease-in-out; }
+        .radio-option input:checked + label {
+            background-color: #dbeafe; border-color: #60a5fa; color: #1e40af; font-weight: 600;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-6">
+            <a href="index.html" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/></svg>
+                Voltar
+            </a>
+            <h1 class="text-3xl font-bold text-gray-800 mt-4">Cadastrar Novo Cliente</h1>
+        </header>
+
+        <main>
+            <form id="add-patient-form" class="bg-white p-6 sm:p-8 rounded-xl shadow-md space-y-6">
+                <div class="form-group">
+                    <label for="name" class="block text-sm font-medium text-gray-700">Nome Completo</label>
+                    <input type="text" id="name" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="dob" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                        <input type="date" id="dob" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                     <div class="form-group">
+                        <label for="age" class="block text-sm font-medium text-gray-700">Idade</label>
+                        <input type="number" id="age" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Telefone de Contato</label>
+                    <input type="tel" id="phone" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                 <div class="form-group">
+                    <label for="address" class="block text-sm font-medium text-gray-700">Endereço (Cidade, Bairro)</label>
+                    <input type="text" id="address" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div class="form-group">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Atendimento</label>
+                    <div id="serviceTypeContainer" class="space-y-3">
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Gerontologia</p>
+                        <div class="flex flex-wrap gap-3">
+                            <div class="radio-option"><input type="radio" id="ger-avc" name="serviceType" value="Gerontologia - Pós-AVC"><label for="ger-avc" class="block cursor-pointer px-4 py-2 border rounded-lg">Pós-AVC</label></div>
+                            <div class="radio-option"><input type="radio" id="ger-dem" name="serviceType" value="Gerontologia - Demência / Alzheimer"><label for="ger-dem" class="block cursor-pointer px-4 py-2 border rounded-lg">Demência / Alzheimer</label></div>
+                            <div class="radio-option"><input type="radio" id="ger-park" name="serviceType" value="Gerontologia - Parkinson"><label for="ger-park" class="block cursor-pointer px-4 py-2 border rounded-lg">Parkinson</label></div>
+                            <div class="radio-option"><input type="radio" id="ger-que" name="serviceType" value="Gerontologia - Prevenção de Quedas"><label for="ger-que" class="block cursor-pointer px-4 py-2 border rounded-lg">Prevenção de Quedas</label></div>
+                            <div class="radio-option"><input type="radio" id="ger-amb" name="serviceType" value="Gerontologia - Adaptação Ambiental"><label for="ger-amb" class="block cursor-pointer px-4 py-2 border rounded-lg">Adaptação Ambiental</label></div>
+                        </div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider pt-2">Reabilitação Física</p>
+                        <div class="flex flex-wrap gap-3">
+                            <div class="radio-option"><input type="radio" id="reb-sup" name="serviceType" value="Reabilitação - Membros Superiores"><label for="reb-sup" class="block cursor-pointer px-4 py-2 border rounded-lg">Membros Superiores</label></div>
+                            <div class="radio-option"><input type="radio" id="reb-inf" name="serviceType" value="Reabilitação - Membros Inferiores"><label for="reb-inf" class="block cursor-pointer px-4 py-2 border rounded-lg">Membros Inferiores</label></div>
+                            <div class="radio-option"><input type="radio" id="reb-neu" name="serviceType" value="Reabilitação - Neurológica"><label for="reb-neu" class="block cursor-pointer px-4 py-2 border rounded-lg">Neurológica</label></div>
+                        </div>
+                         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider pt-2">Outros</p>
+                         <div class="flex flex-wrap gap-3">
+                            <div class="radio-option"><input type="radio" id="out-inf" name="serviceType" value="Desenvolvimento Infantil"><label for="out-inf" class="block cursor-pointer px-4 py-2 border rounded-lg">Desenvolvimento Infantil</label></div>
+                            <div class="radio-option"><input type="radio" id="out-men" name="serviceType" value="Saúde Mental"><label for="out-men" class="block cursor-pointer px-4 py-2 border rounded-lg">Saúde Mental</label></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="main-complaint" class="block text-sm font-medium text-gray-700">Queixa Principal / Objetivos</label>
+                    <textarea id="main-complaint" rows="4" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                <div class="pt-4 flex justify-end">
+                    <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-all">Salvar Cliente</button>
+                </div>
+            </form>
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js').then(reg => console.log('ServiceWorker Registrado.'), err => console.error('Falha no Registro do ServiceWorker: ', err));
+            });
+        }
+    </script>
+</body>
+</html>
