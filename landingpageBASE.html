@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcella Dainese - Terapia Ocupacional</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .text-primary { color: #2563eb; }
+        .bg-primary { background-color: #2563eb; }
+        .border-primary { border-color: #2563eb; }
+        .hover\:bg-primary-dark:hover { background-color: #1d4ed8; }
+        html {
+            scroll-behavior: smooth;
+        }
+        .interactive-element {
+            transition: all 0.3s ease-in-out;
+        }
+        .interactive-element:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        }
+        .interactive-element img {
+            transition: transform 0.3s ease-in-out;
+        }
+        .interactive-element:hover img {
+            transform: scale(1.05);
+        }
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-animate.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Estilo para o efeito Parallax */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="text-gray-700">
+
+    <!-- CABEÇALHO -->
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-10">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="icon-512x512.png" alt="Logotipo Marcella Dainese" class="w-10 h-10 rounded-full">
+                <div class="text-lg font-bold text-gray-800 leading-tight">
+                    <strong>Marcella Dainese</strong> <br>
+                    <span class="text-sm font-normal text-gray-500">Terapeuta Ocupacional</span>
+                </div>
+            </div>
+            <a href="#contato" class="bg-primary text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-primary-dark interactive-element">
+                Agende uma Conversa
+            </a>
+        </nav>
+    </header>
+
+    <!-- SEÇÃO PRINCIPAL (HERO) -->
+    <main>
+        <section class="relative text-white parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2070&auto=format&fit=crop');">
+            <div class="bg-black/60">
+                <div class="container mx-auto px-6 py-24 md:py-32 flex flex-col md:flex-row items-center gap-12">
+                    <div class="flex-shrink-0">
+                        <img src="img1.jpg" alt="Foto profissional da terapeuta Marcella Dainese" class="rounded-full w-48 h-48 md:w-56 md:h-56 object-cover border-4 border-white/50 shadow-2xl">
+                    </div>
+                    <div class="text-center md:text-left md:max-w-2xl">
+                        <h1 class="text-4xl md:text-5xl font-bold leading-tight">
+                            Autonomia e qualidade de vida através da Terapia Ocupacional.
+                        </h1>
+                        <p class="mt-4 text-lg text-gray-200">
+                            Atendimento domiciliar em <strong>Americana-SP e região</strong>, com foco na reabilitação e bem-estar de adultos e idosos, proporcionando uma qualidade de vida melhor e mais digna.
+                        </p>
+                        <a href="#contato" class="mt-8 inline-block bg-primary font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-primary-dark interactive-element">
+                            Entre em Contato
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOBRE MIM -->
+        <section id="sobre" class="relative py-16 scroll-animate parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2070&auto=format&fit=crop');">
+            <div class="absolute inset-0 bg-white/90 backdrop-blur-sm"></div>
+            <div class="relative container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="overflow-hidden rounded-lg shadow-lg md:max-w-md mx-auto">
+                        <img src="img2.jpg" alt="Marcella Dainese em um ambiente profissional" class="w-full h-auto object-cover">
+                    </div>
+                    <div class="text-center md:text-left">
+                        <h2 class="text-3xl font-bold text-blue-700">Sobre Mim</h2>
+                        <p class="mt-4 text-lg text-gray-600 leading-relaxed">
+                            Olá! Sou Marcella Dainese, terapeuta ocupacional apaixonada por ajudar pessoas a conquistarem uma vida mais independente e significativa. Com formação pela <strong>PUC-Campinas</strong> em 2021, atuo há <strong>5 anos com atendimentos domiciliares</strong> e também no <strong>Centro Dia do Idoso em Santa Bárbara d'Oeste</strong>. Minha filosofia de trabalho é baseada na escuta ativa e na criação de um vínculo de confiança, buscando sempre criar um plano terapêutico individualizado que respeite as necessidades e os sonhos de cada cliente e sua família.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FORMAÇÃO E CURSOS -->
+        <section id="formacao" class="bg-white py-16 scroll-animate">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl font-bold text-blue-700">Formação e Cursos</h2>
+                    <p class="mt-2 text-lg text-gray-600">Compromisso contínuo com a excelência profissional.</p>
+                    <div class="mt-8 space-y-6 text-left">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-blue-100 text-primary p-3 rounded-full flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.5 1A.5.5 0 0 0 4 1.5v13a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5h-7zM4 0a1.5 1.5 0 0 0-1.5 1.5v13A1.5 1.5 0 0 0 4.5 16h7a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 11.5 0h-7z"/><path d="M7.012 12.5a.5.5 0 0 1 .638-.018l1.708.906a.5.5 0 0 1 0 .868l-1.708.906a.5.5 0 0 1-.638-.018A.501.501 0 0 1 7 14.5v-2z"/></svg></div>
+                            <div>
+                                <h3 class="font-semibold text-base text-primary">Graduação em Terapia Ocupacional (2021)</h3>
+                                <p class="text-gray-600 text-sm">Pontifícia Universidade Católica de Campinas (PUC-Campinas)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="bg-blue-100 text-primary p-3 rounded-full flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.234-.124 2.502.217 3.587.638a8.7 8.7 0 0 1 3.228 2.802 8.9 8.9 0 0 1 2.22 3.977c.338.98.023 2.043-.828 2.923-.852.88-2.12.92-3.38.213a8.5 8.5 0 0 1-3.64-2.019 8.6 8.6 0 0 1-2.17-3.859 8.8 8.8 0 0 1 .44-4.133zM.5 2.553a.5.5 0 0 1 .223-.435c.434-.27 1.03-.573 1.633-.805 1.234-.468 2.62-.717 3.969-.707.863.006 1.707.114 2.51.334a9.7 9.7 0 0 0 3.61 2.478 9.9 9.9 0 0 0 2.484 4.457c.78.985.56 2.407-1.118 3.393-1.68.986-3.484.59-4.73-.472a9.5 9.5 0 0 0-3.48-2.272 9.6 9.6 0 0 0-2.06-3.161 9.7 9.7 0 0 0-.42-4.068z"/></svg></div>
+                            <div>
+                                <h3 class="font-semibold text-base text-primary">Reabilitação Neuropsicológica do Adulto e Idoso</h3>
+                                <p class="text-gray-600 text-sm">Hospital Sírio-Libanês</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="bg-blue-100 text-primary p-3 rounded-full flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1zm0 2h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1z"/></svg></div>
+                            <div>
+                                <h3 class="font-semibold text-base text-primary">Tecnologia de Cuidado à Pessoa Idosa</h3>
+                                <p class="text-gray-600 text-sm">Unicamp (Aluno Especial)</p>
+                            </div>
+                        </div>
+                         <div class="flex items-center gap-4">
+                            <div class="bg-blue-100 text-primary p-3 rounded-full flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1z"/><path d="M6 3a3 3 0 1 1 4 2.83V12.5a.5.5 0 0 1-1 0V5.83A3 3 0 0 1 6 3zm4 8.365a4.5 4.5 0 0 1-1.41-1.571.5.5 0 0 1 .707-.707l.005.003.002.002A3.5 3.5 0 0 0 11 10.5a.5.5 0 0 1-1 0 2.5 2.5 0 1 0-2.5 2.5.5.5 0 0 1 0 1A3.5 3.5 0 0 1 6 10.5a.5.5 0 0 1-1 0 4.5 4.5 0 1 1 5.41 2.865z"/></svg></div>
+                            <div>
+                                <h3 class="font-semibold text-base text-primary">Outros Cursos</h3>
+                                <p class="text-gray-600 text-sm">Estimulação Cognitiva, Dança Sênior, CIF (CREFITO), Monitoria em Anatomia e Neuroanatomia (PUC-Campinas).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVIÇOS -->
+        <section id="servicos" class="relative py-16">
+            <div class="absolute inset-0 parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2070&auto=format&fit=crop'); opacity: 0.05;"></div>
+            <div class="relative container mx-auto px-6">
+                <div class="text-center mb-12 scroll-animate">
+                    <h2 class="text-3xl font-bold text-blue-700">Como Posso Ajudar</h2>
+                    <p class="mt-2 text-lg text-gray-600">Atendimentos especializados com foco em reabilitação e gerontologia.</p>
+                </div>
+                <div class="space-y-24">
+                    <div class="grid md:grid-cols-2 gap-12 items-center scroll-animate">
+                        <div class="overflow-hidden rounded-lg shadow-lg interactive-element"><img src="img5.jpg" alt="Terapeuta auxiliando uma idosa" class="w-full h-auto object-cover"></div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-gray-800">Gerontologia (Idosos)</h3>
+                            <p class="mt-2 text-gray-600 leading-relaxed">Acompanhamento focado na manutenção da autonomia e independência, prevenção de quedas, estimulação cognitiva para quadros de Alzheimer, Parkinson e outras demências, visando sempre a melhora na qualidade de vida e o bem-estar do idoso.</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-12 items-center scroll-animate">
+                        <div class="md:order-2 overflow-hidden rounded-lg shadow-lg interactive-element"><img src="img6.jpg" alt="Paciente em reabilitação física" class="w-full h-auto object-cover"></div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-gray-800">Reabilitação Física</h3>
+                            <p class="mt-2 text-gray-600 leading-relaxed">Planos de recuperação de funções motoras e cognitivas após acidentes, lesões neurológicas ou AVC. Foco na reabilitação de membros superiores e inferiores para restaurar a capacidade de realizar tarefas essenciais do dia a dia.</p>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-12 items-center scroll-animate">
+                        <div class="overflow-hidden rounded-lg shadow-lg interactive-element"><img src="img7.jpg" alt="Banheiro com adaptações de acessibilidade" class="w-full h-auto object-cover"></div>
+                        <div>
+                            <h3 class="text-2xl font-semibold text-gray-800">Adaptação e Acessibilidade</h3>
+                            <p class="mt-2 text-gray-600 leading-relaxed">Análise detalhada e adaptação de ambientes, como residências e locais de trabalho, para garantir máxima segurança, acessibilidade e facilitar a independência nas atividades de vida diária (AVDs).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- GALERIA DE FOTOS -->
+        <section id="galeria" class="bg-white py-16 scroll-animate">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-blue-700">Atendimentos na Prática</h2>
+                    <p class="mt-2 text-lg text-gray-600">Cuidado e dedicação em cada sessão.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 interactive-element">
+                        <img src="img8.jpg" alt="Atendimento de terapia ocupacional" class="rounded-lg shadow-md w-full sm:w-32 h-48 sm:h-24 object-cover flex-shrink-0">
+                        <p class="text-md text-gray-600 font-medium mt-3 sm:mt-0 sm:text-left">Estimulação Cognitiva</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 interactive-element">
+                        <img src="img9.jpg" alt="Atendimento de terapia ocupacional" class="rounded-lg shadow-md w-full sm:w-32 h-48 sm:h-24 object-cover flex-shrink-0">
+                        <p class="text-md text-gray-600 font-medium mt-3 sm:mt-0 sm:text-left">Coordenação Motora</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 interactive-element">
+                        <img src="img10.jpg" alt="Atendimento de terapia ocupacional" class="rounded-lg shadow-md w-full sm:w-32 h-48 sm:h-24 object-cover flex-shrink-0">
+                        <p class="text-md text-gray-600 font-medium mt-3 sm:mt-0 sm:text-left">Atividades em Grupo</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 interactive-element">
+                        <img src="img11.jpg" alt="Atendimento de terapia ocupacional" class="rounded-lg shadow-md w-full sm:w-32 h-48 sm:h-24 object-cover flex-shrink-0">
+                        <p class="text-md text-gray-600 font-medium mt-3 sm:mt-0 sm:text-left">Fortalecimento</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CONTATO -->
+        <section id="contato" class="relative py-16 scroll-animate parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2070&auto=format&fit=crop');">
+            <div class="absolute inset-0 bg-black/60"></div>
+            <div class="relative container mx-auto px-6 text-white">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl font-bold">Vamos Conversar?</h2>
+                    <p class="mt-4 text-lg text-gray-200 px-4 sm:px-0">
+                        Estou à disposição para tirar suas dúvidas e entender como posso ajudar. O primeiro passo para uma vida com mais autonomia começa com uma conversa.
+                    </p>
+                    <div class="mt-8 bg-white/10 backdrop-blur-lg p-8 rounded-xl shadow-lg inline-block text-left border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-whatsapp text-green-400" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+                            <a href="https://wa.me/5519993690911" target="_blank" a class="text-xl font-bold text-green-400 hover:text-green-300"> (19) 99369-0911</a>
+                        </div>
+                        <div class="mt-4 flex items-center gap-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-envelope-fill text-gray-300" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg>
+                            <a href="mailto:marcellacdainese@gmail.com" class="text-lg text-gray-200 hover:text-white">marcellacdainese@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8 text-center flex flex-col items-center gap-4">
+            <img src="img/icon-512x512.png" alt="Logotipo Marcella Dainese" class="w-12 h-12 rounded-full">
+            <p class="text-sm text-gray-400"><strong>Marcella Dainese - T.O.</strong><br>Atendimento em Americana-SP e região.</p>
+            <p class="text-xs text-gray-500">&copy; <span id="year"></span> FlavioItech — Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Script para Animação de Scroll e Ano Dinâmico -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                    }
+                });
+            }, { threshold: 0.1 });
+            const elements = document.querySelectorAll('.scroll-animate');
+            elements.forEach(el => observer.observe(el));
+        });
+    </script>
+
+</body>
+</html>

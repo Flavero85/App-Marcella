@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // === FUNÇÕES GLOBAIS DE BANCO DE DADOS (localStorage) ===
     function getFromDB(key) {
         const data = localStorage.getItem(key);
-        // Lida com dados que podem não ser arrays (como a agenda)
         if (key.includes('schedule')) {
             return data ? JSON.parse(data) : {};
         }
@@ -200,141 +199,71 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // === LÓGICA DA PÁGINA DE HORÁRIOS (schedule.html) ===
     if (isSchedulePage) {
-        const monthYearEl = document.getElementById('month-year');
-        const calendarBody = document.getElementById('calendar-body');
-        const prevMonthBtn = document.getElementById('prev-month-btn');
-        const nextMonthBtn = document.getElementById('next-month-btn');
-        const modal = document.getElementById('daily-schedule-modal');
-        const modalDateEl = document.getElementById('modal-date');
-        const modalBody = document.getElementById('modal-body');
-        const closeModalBtn = document.getElementById('close-modal-btn');
+        const scheduleBody = document.getElementById('schedule-body');
         const clearButton = document.getElementById('clear-schedule-btn');
+        const hours = ["07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
+        const days = ["seg", "ter", "qua", "qui", "sex"];
 
-        let currentDate = new Date();
-
-        function renderCalendar(date) {
-            calendarBody.innerHTML = '';
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const today = new Date();
-            const monthName = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(date);
-            monthYearEl.textContent = `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} de ${year}`;
-            const firstDayOfMonth = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const scheduleData = getFromDB('scheduleDB_marcella_monthly');
-            let dayCounter = 1;
-            for (let i = 0; i < 6; i++) {
-                const row = document.createElement('tr');
-                for (let j = 0; j < 7; j++) {
-                    const cell = document.createElement('td');
-                    if (i === 0 && j < firstDayOfMonth || dayCounter > daysInMonth) {
-                        cell.classList.add('other-month');
-                    } else {
-                        const fullDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayCounter).padStart(2, '0')}`;
-                        cell.dataset.date = fullDateStr;
-                        const dayNumberDiv = document.createElement('div');
-                        dayNumberDiv.className = 'day-number';
-                        dayNumberDiv.textContent = dayCounter;
-                        if (dayCounter === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                            cell.classList.add('current-day');
-                        }
-                        cell.appendChild(dayNumberDiv);
-                        if (scheduleData[fullDateStr] && scheduleData[fullDateStr].length > 0) {
-                            const dot = document.createElement('div');
-                            dot.className = 'appointment-dot';
-                            cell.appendChild(dot);
-                        }
-                        dayCounter++;
-                    }
-                    row.appendChild(cell);
-                }
-                calendarBody.appendChild(row);
-                if (dayCounter > daysInMonth) break;
-            }
-        }
-
-        function openDayModal(dateStr) {
-            const date = new Date(dateStr + 'T00:00:00');
-            modalDateEl.textContent = date.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' });
-            modalBody.innerHTML = '';
-            const scheduleData = getFromDB('scheduleDB_marcella_monthly');
-            const appointments = scheduleData[dateStr] || [];
+        function renderSchedule() {
+            scheduleBody.innerHTML = '';
+            const scheduleData = getFromDB('scheduleDB_marcella');
             
-            for (let hour = 7; hour <= 22; hour++) {
-                const hourStr = `${String(hour).padStart(2, '0')}:00`;
-                const appointment = appointments.find(a => a.startsWith(hourStr));
-                
-                const hourEl = document.createElement('div');
-                hourEl.className = 'flex items-center p-2 border-b cursor-pointer hover:bg-gray-100';
-                hourEl.dataset.hour = hourStr;
-                hourEl.dataset.date = dateStr;
-                
-                hourEl.innerHTML = `
-                    <span class="w-16 font-semibold text-gray-500">${hourStr}</span>
-                    <span class="flex-1 ml-4 ${appointment ? 'text-blue-800 font-semibold' : 'text-gray-400'}">${appointment ? appointment.split(' - ')[1] : 'Vago'}</span>
-                `;
-                modalBody.appendChild(hourEl);
-            }
-            modal.classList.add('flex');
+            hours.forEach(hour => {
+                const row = document.createElement('tr');
+                if (hour === "12:00") {
+                    row.innerHTML = `<td class="p-2 font-semibold bg-blue-50 text-blue-800">Almoço</td><td colspan="5" class="bg-gray-50"></td>`;
+                } else {
+                    row.innerHTML = `<td class="p-3 font-medium bg-gray-50">${hour}</td>`;
+                    days.forEach(day => {
+                        const cellId = `${day}-${hour.replace(':', '')}`;
+                        const cell = document.createElement('td');
+                        cell.dataset.id = cellId;
+                        const appointmentText = scheduleData[cellId];
+                        if (appointmentText) {
+                            cell.textContent = appointmentText;
+                            cell.classList.add('filled');
+                        }
+                        row.appendChild(cell);
+                    });
+                }
+                scheduleBody.appendChild(row);
+            });
         }
 
-        function closeDayModal() {
-            modal.classList.remove('flex');
-        }
+        function saveSchedule(scheduleData) { saveToDB('scheduleDB_marcella', scheduleData); }
 
-        calendarBody.addEventListener('click', (e) => {
-            const cell = e.target.closest('td');
-            if (cell && cell.dataset.date) {
-                openDayModal(cell.dataset.date);
-            }
-        });
-
-        modalBody.addEventListener('click', (e) => {
-            const hourEl = e.target.closest('div[data-hour]');
-            if (hourEl) {
-                const hour = hourEl.dataset.hour;
-                const date = hourEl.dataset.date;
-                const scheduleData = getFromDB('scheduleDB_marcella_monthly');
-                let appointments = scheduleData[date] || [];
-                const existingAppointment = appointments.find(a => a.startsWith(hour));
-
-                if (existingAppointment) {
-                    if (confirm(`Deseja limpar o horário de "${existingAppointment}"?`)) {
-                        scheduleData[date] = appointments.filter(a => !a.startsWith(hour));
-                        if (scheduleData[date].length === 0) delete scheduleData[date];
+        scheduleBody.addEventListener('click', (e) => {
+            if (e.target.tagName === 'TD' && e.target.dataset.id) {
+                const cell = e.target;
+                const cellId = cell.dataset.id;
+                const currentContent = cell.textContent;
+                const scheduleData = getFromDB('scheduleDB_marcella');
+                
+                if (currentContent) {
+                    if (confirm(`Deseja limpar o horário de "${currentContent}"?`)) {
+                        cell.textContent = '';
+                        cell.classList.remove('filled');
+                        delete scheduleData[cellId];
+                        saveSchedule(scheduleData);
                     }
                 } else {
-                    const clientName = prompt(`Digite o nome do cliente para as ${hour}:`);
+                    const clientName = prompt("Digite o nome do cliente para este horário:");
                     if (clientName && clientName.trim() !== '') {
-                        if (!scheduleData[date]) scheduleData[date] = [];
-                        appointments.push(`${hour} - ${clientName.trim()}`);
-                        appointments.sort();
-                        scheduleData[date] = appointments;
+                        cell.textContent = clientName.trim();
+                        cell.classList.add('filled');
+                        scheduleData[cellId] = clientName.trim();
+                        saveSchedule(scheduleData);
                     }
                 }
-                saveToDB('scheduleDB_marcella_monthly', scheduleData);
-                renderCalendar(currentDate);
-                openDayModal(date);
             }
         });
 
-        prevMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); });
-        nextMonthBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); });
-        closeModalBtn.addEventListener('click', closeDayModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeDayModal(); });
-        
         clearButton.addEventListener('click', () => {
-            if (confirm("TEM CERTEZA?\nIsso irá apagar TODOS os agendamentos do mês visível.")) {
-                const scheduleData = getFromDB('scheduleDB_marcella_monthly');
-                const year = currentDate.getFullYear();
-                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-                const monthPrefix = `${year}-${month}`;
-                Object.keys(scheduleData).forEach(key => { if (key.startsWith(monthPrefix)) delete scheduleData[key]; });
-                saveToDB('scheduleDB_marcella_monthly', scheduleData);
-                renderCalendar(currentDate);
+            if (confirm("TEM CERTEZA?\nIsso irá apagar TODOS os agendamentos da semana.")) {
+                localStorage.removeItem('scheduleDB_marcella');
+                renderSchedule();
             }
         });
-
-        renderCalendar(currentDate);
+        renderSchedule();
     }
 });
